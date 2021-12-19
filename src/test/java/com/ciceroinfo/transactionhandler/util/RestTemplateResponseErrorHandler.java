@@ -1,8 +1,10 @@
 package com.ciceroinfo.transactionhandler.util;
 
 import com.github.dockerjava.api.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 
@@ -11,6 +13,7 @@ import java.io.IOException;
 import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
+@Slf4j
 @Component
 public class RestTemplateResponseErrorHandler
         implements ResponseErrorHandler {
@@ -24,20 +27,10 @@ public class RestTemplateResponseErrorHandler
                         || httpResponse.getStatusCode().series() == SERVER_ERROR);
     }
     
+    // Bypass any http error
+    // only to be validated for Cucumber
     @Override
     public void handleError(ClientHttpResponse httpResponse) throws IOException {
-        // Bypass any http error
-        // only to be validated for Cucumber
-        if (httpResponse.getStatusCode()
-                .series() == HttpStatus.Series.SERVER_ERROR) {
-            // handle SERVER_ERROR
-            System.out.println("null");
-        } else if (httpResponse.getStatusCode()
-                .series() == HttpStatus.Series.CLIENT_ERROR) {
-            // handle CLIENT_ERROR
-            if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new NotFoundException("0");
-            }
-        }
+        log.info("Http status code {}", httpResponse.getStatusCode());
     }
 }
