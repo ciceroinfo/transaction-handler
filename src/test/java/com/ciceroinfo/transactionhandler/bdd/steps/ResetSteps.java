@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.bdd.steps;
 
-import com.ciceroinfo.transactionhandler.util.ResetEndpointHttpClient;
+import com.ciceroinfo.transactionhandler.util.ResetHttpClient;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ResetSteps extends CommonSteps {
     
     @Autowired
-    ResetEndpointHttpClient client;
+    ResetHttpClient client;
     
     @When("the client calls reset system")
     public void theClientCallsResetSystem() {
@@ -21,11 +21,11 @@ public class ResetSteps extends CommonSteps {
     
     @Then("the client receives status code of {int}")
     public void theClientReceivesStatusCodeOf(int statusCode) {
-        Assert.assertEquals("Invalid HTTPp status code", statusCode, responseHttpStatus.value());
+        Assert.assertEquals("Invalid HTTP status code", statusCode, responseHttpStatus.value());
     }
     
-    @And("the client receives response body as {string}")
-    public void theClientReceivesResponseBodyAsOK(String body) {
-        Assert.assertEquals("Not a expected body response", body, responseBody);
+    @And("the client receives response body as 'OK'")
+    public void theClientReceivesResponseBodyAsOK() {
+        Assert.assertEquals("Not a expected body response", OK, responseBody);
     }
 }

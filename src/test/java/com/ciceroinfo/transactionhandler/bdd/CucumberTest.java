@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        tags = "@reset",
+        tags = "@reset or @balance",
         features = {"src/test/resources/features"},
         plugin = {"pretty", "json:target/cucumber.json"},
         glue = "com.ciceroinfo",

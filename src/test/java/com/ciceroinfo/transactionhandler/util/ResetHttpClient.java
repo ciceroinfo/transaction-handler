@@ -10,7 +10,7 @@ import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 
 @Component
 @Scope(SCOPE_CUCUMBER_GLUE)
-public class ResetEndpointHttpClient implements HttpClient {
+public class ResetHttpClient implements HttpClient {
     
     @LocalServerPort
     private int port;
