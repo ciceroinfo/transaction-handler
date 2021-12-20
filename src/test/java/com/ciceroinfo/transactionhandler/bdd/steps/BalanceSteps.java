@@ -1,7 +1,6 @@
 package com.ciceroinfo.transactionhandler.bdd.steps;
 
 import com.ciceroinfo.transactionhandler.util.BalanceHttpClient;
-import com.ciceroinfo.transactionhandler.util.ResetHttpClient;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -12,10 +11,6 @@ public class BalanceSteps extends CommonSteps {
     
     @Autowired
     BalanceHttpClient client;
-    
-    @When("the client calls balance")
-    public void theClientCallsBalance() {
-    }
     
     @When("the client calls balance for a client {long}")
     public void theClientCallsBalanceForAClient(Long clientId) {
