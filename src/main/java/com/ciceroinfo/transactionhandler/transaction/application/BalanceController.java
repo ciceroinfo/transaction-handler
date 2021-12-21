@@ -1,6 +1,7 @@
 package com.ciceroinfo.transactionhandler.transaction.application;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +11,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/balance")
 public class BalanceController {
     
+    @Autowired
+    private LocalCache cache;
+    
     @GetMapping
     @ResponseBody
-    public ResponseEntity<String> getBalance(@RequestParam("account_id") long accountId) {
+    public ResponseEntity<String> getBalance(@RequestParam("account_id") String accountId) {
+        
         log.info("accountId {}", accountId);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
+        
+        if (cache.notExists(accountId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
+        }
+        
+        var balance = cache.value(accountId);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
 }

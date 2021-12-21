@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<testcontainers.version>1.16.2</testcontainers.version>
 		<cucumber.version>7.1.0</cucumber.version>
+		<log4j2.version>2.17.0</log4j2.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -28,8 +29,8 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-core</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
 		<dependency>
@@ -97,12 +98,24 @@
 			<version>${httpclient.version}</version>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-test</artifactId>
+		</dependency>
+		<!--		<dependency>-->
 <!--			<groupId>org.apache.httpcomponents</groupId>-->
 <!--			<artifactId>httpcore</artifactId>-->
 <!--			<version>${httpcore.version}</version>-->
 <!--			<scope>test</scope>-->
 <!--		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>31.0.1-jre</version>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

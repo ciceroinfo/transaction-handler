@@ -24,7 +24,7 @@ public class BalanceHttpClient implements HttpClient {
         return SERVER_URL + ":" + port + "/balance?account_id={account_id}";
     }
     
-    public ResponseEntity<String> balance(Long accountId) {
+    public ResponseEntity<String> balance(String accountId) {
         var restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
         return restTemplate.getForEntity(endpoint(), String.class, accountId);
     }

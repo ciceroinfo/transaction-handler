@@ -12,8 +12,8 @@ public class BalanceSteps extends CommonSteps {
     @Autowired
     BalanceHttpClient client;
     
-    @When("the client calls balance for a client {long}")
-    public void theClientCallsBalanceForAClient(Long clientId) {
+    @When("the client calls balance for a client {string}")
+    public void theClientCallsBalanceForAClient(String clientId) {
         var response = client.balance(clientId);
         responseHttpStatus = response.getStatusCode();
         responseBody = response.getBody();
@@ -24,9 +24,8 @@ public class BalanceSteps extends CommonSteps {
         Assert.assertEquals("Invalid HTTP status code", statusCode, responseHttpStatus.value());
     }
     
-    
-    @And("the client receives a balance response body as 'ZERO'")
-    public void theClientReceivesABalanceResponseBodyAsZERO() {
-        Assert.assertEquals("Not a expected body response", ZERO, responseBody);
+    @And("the client receives a balance response body as {string}")
+    public void theClientReceivesABalanceResponseBodyAs(String balance) {
+        Assert.assertEquals("Not a expected body response", balance, responseBody);
     }
 }

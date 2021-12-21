@@ -40,6 +40,8 @@ public class EventSteps extends CommonSteps {
     
     @When("the client calls event request")
     public void theClientCallsEventRequest() {
+    
+        Assert.assertNotNull("Event input cannot be null", input);
         
         var response = client.event(input);
         
