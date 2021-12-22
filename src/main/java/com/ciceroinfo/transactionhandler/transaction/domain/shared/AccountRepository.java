@@ -1,6 +1,6 @@
-package com.ciceroinfo.transactionhandler.transaction.application;
+package com.ciceroinfo.transactionhandler.transaction.domain.shared;
 
-public interface LocalCache {
+public interface AccountRepository {
     
     String value(String key);
     

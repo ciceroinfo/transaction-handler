@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.util;
 
-import com.ciceroinfo.transactionhandler.transaction.application.EventInput;
+import com.ciceroinfo.transactionhandler.transaction.application.event.EventInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;

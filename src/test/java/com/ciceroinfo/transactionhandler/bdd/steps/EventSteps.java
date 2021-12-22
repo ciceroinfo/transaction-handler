@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.bdd.steps;
 
-import com.ciceroinfo.transactionhandler.transaction.application.EventInput;
+import com.ciceroinfo.transactionhandler.transaction.application.event.EventInput;
 import com.ciceroinfo.transactionhandler.util.EventHttpClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +38,30 @@ public class EventSteps extends CommonSteps {
         input = EventInput.builder().type(type).destination(destination).amount(BigDecimal.valueOf(amount)).build();
     }
     
+    @Given("a new event {string} type from origin account {string} with an amount of {long}")
+    public void aNewEventTypeForOriginWithAnAmountOf(String type, String origin, Long amount) {
+        Assert.assertNotNull(type);
+        Assert.assertFalse(type.isEmpty());
+        Assert.assertNotNull(origin);
+        Assert.assertFalse(origin.isEmpty());
+        Assert.assertNotNull(amount);
+        Assert.assertFalse("Amount must be greater than zero", amount < 1);
+    
+        input = EventInput.builder().type(type).origin(origin).amount(BigDecimal.valueOf(amount)).build();
+    }
+    
+    @Given("a new event {string} type from origin account {string} with an amount of {long} to destination {string}")
+    public void aNewEventTypeFromOriginAccountWithAnAmountOfToDestination(String type, String origin, Long amount, String destination) {
+        Assert.assertNotNull(type);
+        Assert.assertFalse(type.isEmpty());
+        Assert.assertNotNull(origin);
+        Assert.assertFalse(origin.isEmpty());
+        Assert.assertNotNull(amount);
+        Assert.assertFalse("Amount must be greater than zero", amount < 1);
+    
+        input = EventInput.builder().type(type).origin(origin).amount(BigDecimal.valueOf(amount)).destination(destination).build();
+    }
+    
     @When("the client calls event request")
     public void theClientCallsEventRequest() {
     
@@ -63,7 +87,7 @@ public class EventSteps extends CommonSteps {
         
         var output = mapper.readTree(responseBody);
         
-        Assert.assertNull(output.get("origin"));
+        Assert.assertTrue(output.get("origin").isNull());
         Assert.assertNotNull(output.get("destination"));
         Assert.assertEquals(destination, output.get("destination").get("id").textValue());
         Assert.assertEquals(balance, output.get("destination").get("balance").longValue());

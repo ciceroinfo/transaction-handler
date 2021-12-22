@@ -1,6 +1,5 @@
-package com.ciceroinfo.transactionhandler.transaction.application;
+package com.ciceroinfo.transactionhandler.transaction.application.event;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class EventOutput {
-    @JsonIgnore
+    
     private Origin origin;
     private Destination destination;
     

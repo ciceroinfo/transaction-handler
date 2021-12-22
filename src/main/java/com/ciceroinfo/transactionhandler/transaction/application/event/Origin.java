@@ -1,4 +1,4 @@
-package com.ciceroinfo.transactionhandler.transaction.application;
+package com.ciceroinfo.transactionhandler.transaction.application.event;
 
 import lombok.Builder;
 import lombok.Getter;

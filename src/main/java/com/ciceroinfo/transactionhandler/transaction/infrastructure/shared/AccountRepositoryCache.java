@@ -1,5 +1,6 @@
-package com.ciceroinfo.transactionhandler.transaction.application;
+package com.ciceroinfo.transactionhandler.transaction.infrastructure.shared;
 
+import com.ciceroinfo.transactionhandler.transaction.domain.shared.AccountRepository;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -9,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class AccountsCache implements LocalCache {
+public class AccountRepositoryCache implements AccountRepository {
     
     private final LoadingCache<String, String> cache;
     
-    private AccountsCache() {
+    private AccountRepositoryCache() {
         
         CacheLoader<String, String> loader;
         loader = new CacheLoader<>() {
@@ -28,6 +29,11 @@ public class AccountsCache implements LocalCache {
     
     @Override
     public String value(String key) {
+        
+        if (key == null) {
+            return null;
+        }
+        
         return cache.getIfPresent(key);
     }
     
