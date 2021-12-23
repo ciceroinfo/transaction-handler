@@ -1,6 +1,11 @@
 @event
 Feature: Event
 
+  Scenario: Reset state before starting tests
+    When the client calls reset system
+    Then the client receives status code of 200
+    And the client receives response body as 'OK'
+
   Scenario: Create account with initial balance
     Given a new event "deposit" type for destination "100" with an amount of 10
     When the client calls event request
