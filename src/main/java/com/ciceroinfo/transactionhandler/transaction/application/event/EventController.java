@@ -2,6 +2,7 @@ package com.ciceroinfo.transactionhandler.transaction.application.event;
 
 import com.ciceroinfo.transactionhandler.transaction.application.shared.Constants;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountResult;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Deposit;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.End;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Transfer;
@@ -42,13 +43,17 @@ public class EventController {
         
         var event = eventIn.toEvent();
         
-        var out = transaction.perform(cache, event);
+        var accountResult = transaction.perform(cache, event);
         
-        if (Constants.NON_EXISTING_ACCOUNT.equals(out.getMessage())) {
+        if (Constants.NON_EXISTING_ACCOUNT.equals(accountResult.getMessage())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
         }
-        
-        var eventOut = new EventOut(out);
+    
+        return accountResponse(accountResult);
+    }
+    
+    private ResponseEntity<Object> accountResponse(AccountResult accountResult) {
+        var eventOut = new EventOut(accountResult);
         
         var uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .build()

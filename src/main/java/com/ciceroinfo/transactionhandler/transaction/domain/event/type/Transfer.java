@@ -39,19 +39,25 @@ public class Transfer extends Transaction {
                 return AccountResult.builder().message(Constants.INSUFFICIENT_LIMIT).build();
             }
     
+            // Transfer FROM
             cache.add(accountOrigin, balance.subtract(amount).intValue());
     
-            if (cache.notExists(accountDestination)) {
-                cache.add(accountDestination, amount.intValue());
-            } else {
-                var accountDestinationBalance = BigDecimal.valueOf(cache.value(accountDestination));
-                cache.add(accountDestination, accountDestinationBalance.add(amount).intValue());
-            }
-            
+            // Transfer TO
+            transferTo(cache, amount, accountDestination);
+    
             return result(cache, accountOrigin, accountDestination, "transferring");
         }
         
         return nextTransaction.perform(cache, event);
+    }
+    
+    private void transferTo(AccountRepository cache, BigDecimal amount, String accountDestination) {
+        if (cache.notExists(accountDestination)) {
+            cache.add(accountDestination, amount.intValue());
+        } else {
+            var accountDestinationBalance = BigDecimal.valueOf(cache.value(accountDestination));
+            cache.add(accountDestination, accountDestinationBalance.add(amount).intValue());
+        }
     }
     
     private AccountResult result(AccountRepository cache, String accountOrigin, String accountDestination, String message) {
