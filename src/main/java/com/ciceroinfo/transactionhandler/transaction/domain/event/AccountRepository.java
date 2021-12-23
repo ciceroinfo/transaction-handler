@@ -1,14 +1,14 @@
-package com.ciceroinfo.transactionhandler.transaction.domain.shared;
+package com.ciceroinfo.transactionhandler.transaction.domain.event;
 
 public interface AccountRepository {
     
-    String value(String key);
+    Integer value(String key);
     
     boolean exists(String key);
     
     boolean notExists(String key);
     
-    void add(String key, String value);
+    void add(String key, Integer value);
     
     void invalidateAll();
 }

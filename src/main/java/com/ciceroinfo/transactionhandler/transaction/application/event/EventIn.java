@@ -1,5 +1,6 @@
 package com.ciceroinfo.transactionhandler.transaction.application.event;
 
+import com.ciceroinfo.transactionhandler.transaction.domain.event.Event;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,16 +8,20 @@ import java.math.BigDecimal;
 
 @Getter
 @Builder
-public class EventInput {
+public class EventIn {
     
     private String type;
     private String origin;
-    private BigDecimal amount;
+    private Integer amount;
     private String destination;
+    
+    public Event toEvent() {
+        return new Event(type, origin, amount, destination);
+    }
     
     @Override
     public String toString() {
-        return "EventInput{" +
+        return "EventIn{" +
                 "type='" + type + '\'' +
                 ", origin='" + origin + '\'' +
                 ", amount=" + amount +

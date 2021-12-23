@@ -1,6 +1,8 @@
 package com.ciceroinfo.transactionhandler.transaction.domain.shared;
 
-import com.ciceroinfo.transactionhandler.transaction.application.event.EventInput;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.Event;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountResult;
 
 public abstract class Transaction {
     
@@ -10,5 +12,5 @@ public abstract class Transaction {
         this.nextTransaction = nextTransaction;
     }
     
-    public abstract String calc(AccountRepository cache, EventInput input);
+    public abstract AccountResult perform(AccountRepository cache, Event input);
 }

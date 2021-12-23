@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.bdd.steps;
 
-import com.ciceroinfo.transactionhandler.transaction.application.event.EventInput;
+import com.ciceroinfo.transactionhandler.transaction.application.event.EventIn;
 import com.ciceroinfo.transactionhandler.util.EventHttpClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,22 +11,20 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-
 public class EventSteps extends CommonSteps {
     
     @Autowired
     EventHttpClient client;
     
-    EventInput input;
+    EventIn input;
     
-    @Given("a new event {string} and {string} with {long}")
-    public void aNewEventAndWith(String type, String destination, long amount) {
-        input = EventInput.builder().type(type).destination(destination).amount(BigDecimal.valueOf(amount)).build();
+    @Given("a new event {string} and {string} with {int}")
+    public void aNewEventAndWith(String type, String destination, Integer amount) {
+        input = EventIn.builder().type(type).destination(destination).amount(amount).build();
     }
     
-    @Given("a new event {string} type for destination {string} with an amount of {long}")
-    public void aNewEventTypeForDestinationWithAnAmountOf(String type, String destination, Long amount) {
+    @Given("a new event {string} type for destination {string} with an amount of {int}")
+    public void aNewEventTypeForDestinationWithAnAmountOf(String type, String destination, Integer amount) {
         
         Assert.assertNotNull(type);
         Assert.assertFalse(type.isEmpty());
@@ -35,11 +33,11 @@ public class EventSteps extends CommonSteps {
         Assert.assertNotNull(amount);
         Assert.assertFalse("Amount must be greater than zero", amount < 1);
         
-        input = EventInput.builder().type(type).destination(destination).amount(BigDecimal.valueOf(amount)).build();
+        input = EventIn.builder().type(type).destination(destination).amount(amount).build();
     }
     
-    @Given("a new event {string} type from origin account {string} with an amount of {long}")
-    public void aNewEventTypeForOriginWithAnAmountOf(String type, String origin, Long amount) {
+    @Given("a new event {string} type from origin account {string} with an amount of {int}")
+    public void aNewEventTypeForOriginWithAnAmountOf(String type, String origin, Integer amount) {
         Assert.assertNotNull(type);
         Assert.assertFalse(type.isEmpty());
         Assert.assertNotNull(origin);
@@ -47,11 +45,12 @@ public class EventSteps extends CommonSteps {
         Assert.assertNotNull(amount);
         Assert.assertFalse("Amount must be greater than zero", amount < 1);
     
-        input = EventInput.builder().type(type).origin(origin).amount(BigDecimal.valueOf(amount)).build();
+        input = EventIn.builder().type(type).origin(origin).amount(amount).build();
     }
     
-    @Given("a new event {string} type from origin account {string} with an amount of {long} to destination {string}")
-    public void aNewEventTypeFromOriginAccountWithAnAmountOfToDestination(String type, String origin, Long amount, String destination) {
+    @Given("a new event {string} type from origin account {string} with an amount of {int} to destination {string}")
+    public void aNewEventTypeFromOriginAccountWithAnAmountOfToDestination(String type, String origin, Integer amount,
+                                                                          String destination) {
         Assert.assertNotNull(type);
         Assert.assertFalse(type.isEmpty());
         Assert.assertNotNull(origin);
@@ -59,7 +58,7 @@ public class EventSteps extends CommonSteps {
         Assert.assertNotNull(amount);
         Assert.assertFalse("Amount must be greater than zero", amount < 1);
     
-        input = EventInput.builder().type(type).origin(origin).amount(BigDecimal.valueOf(amount)).destination(destination).build();
+        input = EventIn.builder().type(type).origin(origin).amount(amount).destination(destination).build();
     }
     
     @When("the client calls event request")
@@ -87,7 +86,7 @@ public class EventSteps extends CommonSteps {
         
         var output = mapper.readTree(responseBody);
         
-        Assert.assertTrue(output.get("origin").isNull());
+        Assert.assertNull(output.get("origin"));
         Assert.assertNotNull(output.get("destination"));
         Assert.assertEquals(destination, output.get("destination").get("id").textValue());
         Assert.assertEquals(balance, output.get("destination").get("balance").longValue());

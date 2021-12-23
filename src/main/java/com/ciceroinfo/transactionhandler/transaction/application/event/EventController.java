@@ -1,12 +1,11 @@
 package com.ciceroinfo.transactionhandler.transaction.application.event;
 
 import com.ciceroinfo.transactionhandler.transaction.application.shared.Constants;
-import com.ciceroinfo.transactionhandler.transaction.domain.shared.AccountRepository;
-import com.ciceroinfo.transactionhandler.transaction.domain.event.Deposit;
-import com.ciceroinfo.transactionhandler.transaction.domain.event.End;
-import com.ciceroinfo.transactionhandler.transaction.domain.event.Withdraw;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Deposit;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.type.End;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Withdraw;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
 import com.ciceroinfo.transactionhandler.transaction.domain.shared.Transaction;
-import com.ciceroinfo.transactionhandler.transaction.domain.shared.TransactionTypes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
 
 @Slf4j
 @RestController
@@ -32,40 +30,35 @@ public class EventController {
     
     @PostConstruct
     public void init() {
+        // Types of transactions allowed
         transaction = new Deposit(new Withdraw(new End()));
     }
     
     @PostMapping
-    public ResponseEntity<Object> postEvent(@RequestBody EventInput eventInput) {
+    public ResponseEntity<Object> postEvent(@RequestBody EventIn eventIn) {
         
-        log.info("eventInput {}", eventInput);
+        log.debug("eventIn {}", eventIn);
         
-        var result = transaction.calc(cache, eventInput);
+        var event = eventIn.toEvent();
         
-        if (Constants.NON_EXISTING_ACCOUNT.equals(result)) {
+        var out = transaction.perform(cache, event);
+        
+        /*
+         * Create   {"destination": {"id":"100", "balance":10}}
+         * Withdraw {"origin":      {"id":"100", "balance":15}}
+         * Transfer {"origin":      {"id":"100", "balance":0 } , "destination": {"id":"300", "balance":15}}
+         * */
+        
+        if (Constants.NON_EXISTING_ACCOUNT.equals(out.getMessage())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
         }
         
-        Destination destination = null;
-        Origin origin = null;
-        
-        if (TransactionTypes.DEPOSIT.equals(eventInput.getType())) {
-            destination =
-                    Destination.builder().id(eventInput.getDestination()).balance(new BigDecimal(cache.value(eventInput.getDestination()))).build();
-        } else if (TransactionTypes.WITHDRAW.equals(eventInput.getType())) {
-            
-            var balance = cache.value(eventInput.getOrigin());
-            origin = Origin.builder().id(eventInput.getOrigin()).balance(new BigDecimal(balance)).build();
-        }
-        
-        var eventOutput = EventOutput.builder().origin(origin).destination(destination).build();
+        var eventOut = new EventOut(out);
         
         var uri = ServletUriComponentsBuilder.fromCurrentRequest()
-//                .path("/{id}")
-//                .buildAndExpand(eventInput.getDestination())
                 .build()
                 .toUri();
-        log.info("eventOutput {}", eventOutput);
-        return ResponseEntity.created(uri).body(eventOutput);
+        log.debug("eventOut {}", eventOut);
+        return ResponseEntity.created(uri).body(eventOut);
     }
 }

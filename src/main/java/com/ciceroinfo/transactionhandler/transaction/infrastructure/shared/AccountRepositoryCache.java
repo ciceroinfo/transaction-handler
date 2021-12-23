@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.transaction.infrastructure.shared;
 
-import com.ciceroinfo.transactionhandler.transaction.domain.shared.AccountRepository;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -8,27 +8,34 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class AccountRepositoryCache implements AccountRepository {
     
-    private final LoadingCache<String, String> cache;
+    private final LoadingCache<String, Integer> cache;
+    private final ConcurrentMap<String, Integer> map = new ConcurrentHashMap<>();
     
     private AccountRepositoryCache() {
         
-        CacheLoader<String, String> loader;
-        loader = new CacheLoader<>() {
+        CacheLoader<String, Integer> loader = new CacheLoader<>() {
             @Override
-            public String load(String key) {
-                return key.toUpperCase();
+            public Integer load(String key) {
+                return getValue(key.toUpperCase());
             }
         };
         
         cache = CacheBuilder.newBuilder().build(loader);
     }
     
+    private Integer getValue(String key) {
+        return map.get(key);
+    }
+    
     @Override
-    public String value(String key) {
+    public Integer value(String key) {
         
         if (key == null) {
             return null;
@@ -48,7 +55,7 @@ public class AccountRepositoryCache implements AccountRepository {
     }
     
     @Override
-    public void add(String key, String value) {
+    public void add(String key, Integer value) {
         cache.put(key, value);
     }
     

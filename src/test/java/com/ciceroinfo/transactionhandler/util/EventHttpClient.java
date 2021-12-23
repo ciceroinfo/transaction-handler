@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.util;
 
-import com.ciceroinfo.transactionhandler.transaction.application.event.EventInput;
+import com.ciceroinfo.transactionhandler.transaction.application.event.EventIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -25,7 +25,7 @@ public class EventHttpClient implements HttpClient {
         return SERVER_URL + ":" + port + "/event";
     }
     
-    public ResponseEntity<String> event(EventInput input) {
+    public ResponseEntity<String> event(EventIn input) {
         var restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
         return restTemplate.postForEntity(endpoint(), input, String.class);
     }

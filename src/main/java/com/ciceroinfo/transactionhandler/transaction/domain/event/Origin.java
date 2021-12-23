@@ -1,16 +1,14 @@
-package com.ciceroinfo.transactionhandler.transaction.application.event;
+package com.ciceroinfo.transactionhandler.transaction.domain.event;
 
 import lombok.Builder;
 import lombok.Getter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Builder
 public class Origin {
     
     private String id;
-    private BigDecimal balance;
+    private Integer balance;
     
     @Override
     public String toString() {

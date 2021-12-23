@@ -1,6 +1,6 @@
 package com.ciceroinfo.transactionhandler.transaction.application.balance;
 
-import com.ciceroinfo.transactionhandler.transaction.domain.shared.AccountRepository;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +27,6 @@ public class BalanceController {
         
         var balance = cache.value(accountId);
         
-        return ResponseEntity.status(HttpStatus.OK).body(balance);
+        return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(balance));
     }
 }
