@@ -4,6 +4,7 @@ import com.ciceroinfo.transactionhandler.transaction.application.event.EventIn;
 import com.ciceroinfo.transactionhandler.util.EventHttpClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -16,7 +17,14 @@ public class EventSteps extends CommonSteps {
     @Autowired
     EventHttpClient client;
     
+    ObjectMapper mapper;
+    
     EventIn input;
+    
+    @Before
+    public void before()  {
+        mapper = new ObjectMapper();
+    }
     
     @Given("a new event {string} and {string} with {int}")
     public void aNewEventAndWith(String type, String destination, Integer amount) {
@@ -79,16 +87,22 @@ public class EventSteps extends CommonSteps {
         Assert.assertEquals("Invalid HTTP status code", statusCode, responseHttpStatus.value());
     }
     
-    @And("the follow json values response, destination id {string} and balance of {long}")
-    public void theFollowJsonValuesResponseDestinationIdAndBalanceOf(String destination, long balance) throws JsonProcessingException {
+    @And("the follow json values response, {string} id {string} and balance of {long}")
+    public void theFollowJsonValuesResponseDestinationIdAndBalanceOf(String responseType, String destination,
+                                                                     long balance) throws JsonProcessingException {
         
-        ObjectMapper mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
         
         var output = mapper.readTree(responseBody);
-        
-        Assert.assertNull(output.get("origin"));
-        Assert.assertNotNull(output.get("destination"));
-        Assert.assertEquals(destination, output.get("destination").get("id").textValue());
-        Assert.assertEquals(balance, output.get("destination").get("balance").longValue());
+        var responseTypeJsonNode = output.get(responseType);
+        Assert.assertNotNull(responseTypeJsonNode);
+        Assert.assertEquals(destination, responseTypeJsonNode.get("id").textValue());
+        Assert.assertEquals(balance, responseTypeJsonNode.get("balance").longValue());
+    }
+    
+    @And("lack of {string} value")
+    public void lackOfValue(String responseType) throws JsonProcessingException {
+        var output = mapper.readTree(responseBody);
+        Assert.assertNull(output.get(responseType));
     }
 }

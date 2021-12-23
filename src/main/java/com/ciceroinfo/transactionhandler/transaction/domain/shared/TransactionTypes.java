@@ -4,4 +4,5 @@ public interface TransactionTypes {
     
     String DEPOSIT = "deposit";
     String WITHDRAW = "withdraw";
+    String TRANSFER = "transfer";
 }

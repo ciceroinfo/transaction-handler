@@ -1,10 +1,11 @@
 package com.ciceroinfo.transactionhandler.transaction.application.event;
 
 import com.ciceroinfo.transactionhandler.transaction.application.shared.Constants;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Deposit;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.End;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Transfer;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Withdraw;
-import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
 import com.ciceroinfo.transactionhandler.transaction.domain.shared.Transaction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class EventController {
     @PostConstruct
     public void init() {
         // Types of transactions allowed
-        transaction = new Deposit(new Withdraw(new End()));
+        transaction = new Deposit(new Withdraw(new Transfer(new End())));
     }
     
     @PostMapping
@@ -42,12 +43,6 @@ public class EventController {
         var event = eventIn.toEvent();
         
         var out = transaction.perform(cache, event);
-        
-        /*
-         * Create   {"destination": {"id":"100", "balance":10}}
-         * Withdraw {"origin":      {"id":"100", "balance":15}}
-         * Transfer {"origin":      {"id":"100", "balance":0 } , "destination": {"id":"300", "balance":15}}
-         * */
         
         if (Constants.NON_EXISTING_ACCOUNT.equals(out.getMessage())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
