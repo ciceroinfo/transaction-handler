@@ -21,7 +21,7 @@ import java.util.List;
 public class ResetController {
     
     @Autowired
-    private AccountRepository cache;
+    private AccountRepository repository;
     
     @ApiOperation(value = "Reset state before starting tests")
     @ApiResponses(value = {
@@ -32,7 +32,7 @@ public class ResetController {
         
         log.info("resetting");
         
-        cache.invalidateAll();
+        repository.invalidateAll();
         
         return ResponseEntity.ok("OK");
     }

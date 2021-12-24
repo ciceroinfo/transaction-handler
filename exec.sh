@@ -10,8 +10,8 @@ elif [ "cucumber-report" = $1 ]; then
   echo "file://$PWD/target/cucumber-html-reports/overview-features.html"
 elif [ "--help" = $1 ]; then
   echo "Usage: $ ./exec.sh [OPTION]"
-  echo -e ' \t  build \t\t Execute docker command to create transaction-handler image'
-  echo -e ' \t  cucumber-report \t Generate a Cucumber report from de features files'
+  echo -e ' \t  build \t\t Execute docker command to create transaction-handler image and run using 8080 port'
+  echo -e ' \t  cucumber-report \t Generate a Cucumber report from features files'
 else
   echo "Invalid command"
   echo "Try 'exec.sh --help' for more information."

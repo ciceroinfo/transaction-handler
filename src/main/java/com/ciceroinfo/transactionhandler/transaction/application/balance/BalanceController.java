@@ -20,7 +20,7 @@ import java.util.List;
 public class BalanceController {
     
     @Autowired
-    private AccountRepository cache;
+    private AccountRepository repository;
     
     @ApiOperation(value = "Retrieve the balance currently on your account")
     @ApiResponses(value = {
@@ -33,11 +33,11 @@ public class BalanceController {
         
         log.info("accountId {}", accountId);
         
-        if (cache.notExists(accountId)) {
+        if (repository.notExists(accountId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
         }
         
-        var balance = cache.value(accountId);
+        var balance = repository.value(accountId);
         
         return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(balance));
     }
