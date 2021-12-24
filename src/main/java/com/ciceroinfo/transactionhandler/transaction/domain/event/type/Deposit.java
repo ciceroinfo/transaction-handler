@@ -19,32 +19,43 @@ public class Deposit extends Transaction {
         super(nextTransaction);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public AccountResult perform(AccountRepository cache, Event event) {
+    public AccountResult perform(AccountRepository repository, Event event) {
         
         if (TransactionTypes.DEPOSIT.equals(event.getType())) {
             
             var destinationId = event.getDestination();
             var amount = event.getAmount();
             
-            if (cache.notExists(destinationId)) {
-                cache.add(destinationId, amount);
-                return result(cache, destinationId, "creating");
+            if (repository.notExists(destinationId)) {
+                repository.add(destinationId, amount);
+                return result(repository, destinationId, "creating");
             }
             
-            var balance = BigDecimal.valueOf(cache.value(destinationId));
+            var balance = BigDecimal.valueOf(repository.value(destinationId));
             
             // add to the existing amount
-            cache.add(destinationId, balance.add(BigDecimal.valueOf(amount)).intValue());
+            repository.add(destinationId, balance.add(BigDecimal.valueOf(amount)).intValue());
             
-            return result(cache, destinationId, "depositing");
+            return result(repository, destinationId, "depositing");
         }
         
-        return nextTransaction.perform(cache, event);
+        return nextTransaction.perform(repository, event);
     }
     
-    private AccountResult result(AccountRepository cache, String destinationId, String message) {
-        var balance = cache.value(destinationId);
+    /**
+     * Create an Account Result
+     *
+     * @param repository    account
+     * @param destinationId deposit destination id
+     * @param message       of the transaction result
+     * @return a Transaction Account Result
+     */
+    private AccountResult result(AccountRepository repository, String destinationId, String message) {
+        var balance = repository.value(destinationId);
         var destination = Destination.builder().id(destinationId).balance(balance).build();
         return AccountResult.builder().message(message).destination(destination).build();
     }

@@ -4,8 +4,6 @@ import com.ciceroinfo.transactionhandler.transaction.domain.event.Event;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Builder
 public class EventIn {

@@ -1,8 +1,8 @@
 package com.ciceroinfo.transactionhandler.transaction.domain.event.type;
 
 import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountRepository;
-import com.ciceroinfo.transactionhandler.transaction.domain.event.Event;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.AccountResult;
+import com.ciceroinfo.transactionhandler.transaction.domain.event.Event;
 import com.ciceroinfo.transactionhandler.transaction.domain.shared.Transaction;
 
 /**
@@ -15,7 +15,7 @@ public class End extends Transaction {
     }
     
     @Override
-    public AccountResult perform(AccountRepository cache, Event input) {
+    public AccountResult perform(AccountRepository repository, Event event) {
         return null;
     }
 }

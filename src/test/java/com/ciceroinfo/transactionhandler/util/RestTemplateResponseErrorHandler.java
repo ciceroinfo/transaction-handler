@@ -1,10 +1,7 @@
 package com.ciceroinfo.transactionhandler.util;
 
-import com.github.dockerjava.api.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 

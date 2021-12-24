@@ -8,6 +8,10 @@ import com.ciceroinfo.transactionhandler.transaction.domain.event.type.End;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Transfer;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.type.Withdraw;
 import com.ciceroinfo.transactionhandler.transaction.domain.shared.Transaction;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
+@Api(value = "event", tags = {"event"})
 @Slf4j
 @RestController
 @RequestMapping("/event")
@@ -36,6 +42,11 @@ public class EventController {
         transaction = new Deposit(new Withdraw(new Transfer(new End())));
     }
     
+    @ApiOperation(value = "Retrieve the balance currently on your account")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully processed", response = List.class),
+            @ApiResponse(code = 404, message = "Account not found", response = List.class)
+    })
     @PostMapping
     public ResponseEntity<Object> postEvent(@RequestBody EventIn eventIn) {
         
@@ -48,10 +59,16 @@ public class EventController {
         if (Constants.NON_EXISTING_ACCOUNT.equals(accountResult.getMessage())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
         }
-    
+        
         return accountResponse(accountResult);
     }
     
+    /**
+     * Create an Event Out response
+     *
+     * @param accountResult with the transaction result
+     * @return Event Out response
+     */
     private ResponseEntity<Object> accountResponse(AccountResult accountResult) {
         var eventOut = new EventOut(accountResult);
         

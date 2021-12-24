@@ -18,53 +18,72 @@ public class Transfer extends Transaction {
         super(nextTransaction);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public AccountResult perform(AccountRepository cache, Event event) {
+    public AccountResult perform(AccountRepository repository, Event event) {
         
         if (TransactionTypes.TRANSFER.equals(event.getType())) {
             
             log.debug("Transfer: {}", event);
             
-            var accountOrigin = event.getOrigin();
+            var accountOriginId = event.getOrigin();
             
-            if (cache.notExists(accountOrigin)) {
+            if (repository.notExists(accountOriginId)) {
                 return AccountResult.builder().message(Constants.NON_EXISTING_ACCOUNT).build();
             }
             
-            var balance = BigDecimal.valueOf(cache.value(accountOrigin));
+            var balance = BigDecimal.valueOf(repository.value(accountOriginId));
             var amount = BigDecimal.valueOf(event.getAmount());
-            var accountDestination = event.getDestination();
+            var accountDestinationId = event.getDestination();
             
-            if(amount.compareTo(balance) < 0) {
+            if (amount.compareTo(balance) < 0) {
                 return AccountResult.builder().message(Constants.INSUFFICIENT_LIMIT).build();
             }
-    
-            // Transfer FROM
-            cache.add(accountOrigin, balance.subtract(amount).intValue());
-    
-            // Transfer TO
-            transferTo(cache, amount, accountDestination);
-    
-            return result(cache, accountOrigin, accountDestination, "transferring");
+            
+            // subtract amount FROM origin
+            repository.add(accountOriginId, balance.subtract(amount).intValue());
+            
+            // transfer amount TO destination
+            transferTo(repository, amount, accountDestinationId);
+            
+            return result(repository, accountOriginId, accountDestinationId, "transferring");
         }
         
-        return nextTransaction.perform(cache, event);
+        return nextTransaction.perform(repository, event);
     }
     
-    private void transferTo(AccountRepository cache, BigDecimal amount, String accountDestination) {
-        if (cache.notExists(accountDestination)) {
-            cache.add(accountDestination, amount.intValue());
+    /**
+     * Transfer amount to the destination account
+     *
+     * @param repository           account
+     * @param amount               to be transferred
+     * @param accountDestinationId destination id
+     */
+    private void transferTo(AccountRepository repository, BigDecimal amount, String accountDestinationId) {
+        if (repository.notExists(accountDestinationId)) {
+            repository.add(accountDestinationId, amount.intValue());
         } else {
-            var accountDestinationBalance = BigDecimal.valueOf(cache.value(accountDestination));
-            cache.add(accountDestination, accountDestinationBalance.add(amount).intValue());
+            var accountDestinationBalance = BigDecimal.valueOf(repository.value(accountDestinationId));
+            repository.add(accountDestinationId, accountDestinationBalance.add(amount).intValue());
         }
     }
     
-    private AccountResult result(AccountRepository cache, String accountOrigin, String accountDestination, String message) {
-        var accountOriginBalance = cache.value(accountOrigin);
-        var accountDestinationBalance = cache.value(accountDestination);
-        var origin = Origin.builder().id(accountOrigin).balance(accountOriginBalance).build();
-        var destination = Destination.builder().id(accountDestination).balance(accountDestinationBalance).build();
+    /**
+     * Create an Account Result
+     *
+     * @param repository           account
+     * @param accountOriginId      transfer origin id
+     * @param accountDestinationId transfer destination id
+     * @param message              of the transaction result
+     * @return a Transaction Account Result
+     */
+    private AccountResult result(AccountRepository repository, String accountOriginId, String accountDestinationId, String message) {
+        var accountOriginBalance = repository.value(accountOriginId);
+        var accountDestinationBalance = repository.value(accountDestinationId);
+        var origin = Origin.builder().id(accountOriginId).balance(accountOriginBalance).build();
+        var destination = Destination.builder().id(accountDestinationId).balance(accountDestinationBalance).build();
         return AccountResult.builder().message(message).origin(origin).destination(destination).build();
     }
 }

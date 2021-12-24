@@ -21,8 +21,11 @@ public class Withdraw extends Transaction {
         super(nextTransaction);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public AccountResult perform(AccountRepository cache, Event event) {
+    public AccountResult perform(AccountRepository repository, Event event) {
         
         if (TransactionTypes.WITHDRAW.equals(event.getType())) {
             
@@ -31,23 +34,31 @@ public class Withdraw extends Transaction {
             var origin = event.getOrigin();
             var amount = event.getAmount();
             
-            if (cache.notExists(origin)) {
+            if (repository.notExists(origin)) {
                 return AccountResult.builder().message(Constants.NON_EXISTING_ACCOUNT).build();
             }
             
-            var balance = cache.value(origin);
+            var balance = repository.value(origin);
             
             // add to the existing amount
-            cache.add(origin, BigDecimal.valueOf(balance).subtract(BigDecimal.valueOf(amount)).intValue());
+            repository.add(origin, BigDecimal.valueOf(balance).subtract(BigDecimal.valueOf(amount)).intValue());
             
-            return result(cache, origin, "withdrawing");
+            return result(repository, origin, "withdrawing");
         }
         
-        return nextTransaction.perform(cache, event);
+        return nextTransaction.perform(repository, event);
     }
     
-    private AccountResult result(AccountRepository cache, String accountId, String message) {
-        var balance = cache.value(accountId);
+    /**
+     * Create an Account Result
+     *
+     * @param repository account
+     * @param accountId  withdraw origin id
+     * @param message    of the transaction result
+     * @return a Transaction Account Result
+     */
+    private AccountResult result(AccountRepository repository, String accountId, String message) {
+        var balance = repository.value(accountId);
         var origin = Origin.builder().id(accountId).balance(balance).build();
         return AccountResult.builder().message(message).origin(origin).build();
     }
