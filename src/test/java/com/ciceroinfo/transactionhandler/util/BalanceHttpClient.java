@@ -1,6 +1,7 @@
 package com.ciceroinfo.transactionhandler.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Scope;
@@ -16,12 +17,15 @@ public class BalanceHttpClient implements HttpClient {
     @LocalServerPort
     private int port;
     
+    @Value("${server.servlet.context-path}")
+    private String context;
+    
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
     
     @Override
     public String endpoint() {
-        return SERVER_URL + ":" + port + "/balance?account_id={account_id}";
+        return SERVER_URL + ":" + port + context + "/balance?account_id={account_id}";
     }
     
     public ResponseEntity<String> balance(String accountId) {

@@ -1,5 +1,6 @@
 package com.ciceroinfo.transactionhandler.util;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,14 @@ public class ResetHttpClient implements HttpClient {
     @LocalServerPort
     private int port;
     
+    @Value("${server.servlet.context-path}")
+    private String context;
+    
     private final RestTemplate restTemplate = new RestTemplate();
     
     @Override
     public String endpoint() {
-        return SERVER_URL + ":" + port + "/reset";
+        return SERVER_URL + ":" + port + context + "/reset";
     }
     
     public ResponseEntity<String> reset() {

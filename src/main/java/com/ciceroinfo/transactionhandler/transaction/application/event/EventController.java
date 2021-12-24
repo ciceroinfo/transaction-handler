@@ -32,7 +32,7 @@ import java.util.List;
 public class EventController {
     
     @Autowired
-    private AccountRepository cache;
+    private AccountRepository repository;
     
     private Transaction transaction;
     
@@ -54,7 +54,7 @@ public class EventController {
         
         var event = eventIn.toEvent();
         
-        var accountResult = transaction.perform(cache, event);
+        var accountResult = transaction.perform(repository, event);
         
         if (Constants.NON_EXISTING_ACCOUNT.equals(accountResult.getMessage())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("0");
