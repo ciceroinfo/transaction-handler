@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 @Slf4j
 public class Transfer extends Transaction {
     
+    public static final String TRANSFERRED = "transferred";
+    
     public Transfer(Transaction nextTransaction) {
         super(nextTransaction);
     }
@@ -48,7 +50,7 @@ public class Transfer extends Transaction {
             // transfer amount TO destination
             transferTo(repository, amount, accountDestinationId);
             
-            return result(repository, accountOriginId, accountDestinationId, "transferring");
+            return result(repository, accountOriginId, accountDestinationId);
         }
         
         return nextTransaction.perform(repository, event);
@@ -76,14 +78,13 @@ public class Transfer extends Transaction {
      * @param repository           account
      * @param accountOriginId      transfer origin id
      * @param accountDestinationId transfer destination id
-     * @param message              of the transaction result
      * @return a Transaction Account Result
      */
-    private AccountResult result(AccountRepository repository, String accountOriginId, String accountDestinationId, String message) {
+    private AccountResult result(AccountRepository repository, String accountOriginId, String accountDestinationId) {
         var accountOriginBalance = repository.value(accountOriginId);
         var accountDestinationBalance = repository.value(accountDestinationId);
         var origin = Origin.builder().id(accountOriginId).balance(accountOriginBalance).build();
         var destination = Destination.builder().id(accountDestinationId).balance(accountDestinationBalance).build();
-        return AccountResult.builder().message(message).origin(origin).destination(destination).build();
+        return AccountResult.builder().message(TRANSFERRED).origin(origin).destination(destination).build();
     }
 }

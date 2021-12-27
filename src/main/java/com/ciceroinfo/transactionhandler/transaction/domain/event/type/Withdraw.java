@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 @Slf4j
 public class Withdraw extends Transaction {
     
+    public static final String WITHDREW = "withdrew";
+    
     public Withdraw(Transaction nextTransaction) {
         super(nextTransaction);
     }
@@ -43,7 +45,7 @@ public class Withdraw extends Transaction {
             // add to the existing amount
             repository.add(origin, BigDecimal.valueOf(balance).subtract(BigDecimal.valueOf(amount)).intValue());
             
-            return result(repository, origin, "withdrawing");
+            return result(repository, origin);
         }
         
         return nextTransaction.perform(repository, event);
@@ -54,12 +56,11 @@ public class Withdraw extends Transaction {
      *
      * @param repository account
      * @param accountId  withdraw origin id
-     * @param message    of the transaction result
      * @return a Transaction Account Result
      */
-    private AccountResult result(AccountRepository repository, String accountId, String message) {
+    private AccountResult result(AccountRepository repository, String accountId) {
         var balance = repository.value(accountId);
         var origin = Origin.builder().id(accountId).balance(balance).build();
-        return AccountResult.builder().message(message).origin(origin).build();
+        return AccountResult.builder().message(WITHDREW).origin(origin).build();
     }
 }

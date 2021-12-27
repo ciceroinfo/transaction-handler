@@ -15,6 +15,9 @@ import java.math.BigDecimal;
  */
 public class Deposit extends Transaction {
     
+    public static final String DEPOSITED = "deposited";
+    public static final String CREATED = "created";
+    
     public Deposit(Transaction nextTransaction) {
         super(nextTransaction);
     }
@@ -32,7 +35,7 @@ public class Deposit extends Transaction {
             
             if (repository.notExists(destinationId)) {
                 repository.add(destinationId, amount);
-                return result(repository, destinationId, "creating");
+                return result(repository, destinationId, CREATED);
             }
             
             var balance = BigDecimal.valueOf(repository.value(destinationId));
@@ -40,7 +43,7 @@ public class Deposit extends Transaction {
             // add to the existing amount
             repository.add(destinationId, balance.add(BigDecimal.valueOf(amount)).intValue());
             
-            return result(repository, destinationId, "depositing");
+            return result(repository, destinationId, DEPOSITED);
         }
         
         return nextTransaction.perform(repository, event);
