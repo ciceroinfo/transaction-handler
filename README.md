@@ -15,7 +15,7 @@
 
 <p align="center">
 Tests<br>
-<img src="https://img.shields.io/badge/coverage-0%25-red.svg" >
+<img src="https://img.shields.io/badge/coverage-86%25-green.svg" >
 <img src="https://img.shields.io/badge/it-100%25-brightgreen.svg" >
 <img src="https://img.shields.io/badge/e2e-100%25-brightgreen.svg" >
 </p>
