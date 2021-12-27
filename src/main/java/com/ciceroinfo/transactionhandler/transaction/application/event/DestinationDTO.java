@@ -3,9 +3,11 @@ package com.ciceroinfo.transactionhandler.transaction.application.event;
 import com.ciceroinfo.transactionhandler.transaction.domain.event.Destination;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 public class DestinationDTO {
     
     private String id;
@@ -18,13 +20,5 @@ public class DestinationDTO {
         }
         
         return DestinationDTO.builder().id(destination.getId()).balance(destination.getBalance()).build();
-    }
-    
-    @Override
-    public String toString() {
-        return "Destination{" +
-                "id='" + id + '\'' +
-                ", balance=" + balance +
-                '}';
     }
 }

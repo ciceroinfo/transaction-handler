@@ -2,8 +2,10 @@ package com.ciceroinfo.transactionhandler.transaction.domain.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 @AllArgsConstructor
 public class Event {
     
@@ -11,14 +13,4 @@ public class Event {
     private String origin;
     private Integer amount;
     private String destination;
-    
-    @Override
-    public String toString() {
-        return "Event{" +
-                "type='" + type + '\'' +
-                ", origin='" + origin + '\'' +
-                ", amount=" + amount +
-                ", destination='" + destination + '\'' +
-                '}';
-    }
 }
