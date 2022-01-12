@@ -40,7 +40,7 @@ public class Transfer extends Transaction {
             var amount = BigDecimal.valueOf(event.getAmount());
             var accountDestinationId = event.getDestination();
             
-            if (amount.compareTo(balance) < 0) {
+            if (balance.compareTo(amount) < 0) {
                 return AccountResult.builder().message(Constants.INSUFFICIENT_LIMIT).build();
             }
             
