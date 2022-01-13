@@ -92,3 +92,9 @@ Feature: Event
     Then the client receives a HTTP event status code of 201
     And the follow json values response, "destination" id '100' and balance of 10
 ```
+
+# Project Links and Endpoints
+- [api-docs](http://localhost:8080/v2/api-docs)
+- http://localhost:8080/reset
+- http://localhost:8080/balance
+- http://localhost:8080/event
